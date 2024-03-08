@@ -13,4 +13,9 @@ public class BaseManager<T> where T:new()
             return instance;
         }
     }
+
+    public virtual void OnAddListener(){}
+    public virtual void OnRemoveListener(){}
+    
+    public virtual void OnDispose(){}
 }

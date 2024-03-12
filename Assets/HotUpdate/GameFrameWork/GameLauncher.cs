@@ -3,5 +3,9 @@
 
 public class GameLauncher : BaseManager<GameLauncher>
 {
-    public void Launch() { Debug.Log("热更新成功！！！！！"); }
+    public void Launch()
+    {
+        Debug.Log("热更新成功！！！！！");
+        DataProvider.Instance.Init();
+    }
 }

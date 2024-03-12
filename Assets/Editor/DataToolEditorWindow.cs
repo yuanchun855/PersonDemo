@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.IO;
 using UnityEditor;
 using UnityEngine;
 using Debug = UnityEngine.Debug;
@@ -72,8 +73,11 @@ namespace Editor
             tempPath = "";
             if (GUILayout.Button("生成"))
             {
-                
-                string confPath = $"C:/UnityProject/active-configuration-tool/Assets/StreamingAssets/MiniTemplate/luban.conf";
+                // foreach (var file in Directory.GetFiles($"{Config.OutPutPath}"))    
+                // {
+                //     File.Delete(file);
+                // }
+                string confPath = $"{Application.dataPath}/MiniTemplate/luban.conf";
                 string cmd =
                     $"dotnet {Config.DllPath} -t all -c cs-simple-json -d json --conf {confPath} -x outputCodeDir={Config.OutPutPath} -x outputDataDir={Config.JsonPath}";
                 Process process = new Process();
@@ -93,6 +97,7 @@ namespace Editor
                 process.WaitForExit();
                 // 输出结果
                 Debug.Log("Command Output: " + output);
+                AssetDatabase.Refresh();
             }
         }
     }

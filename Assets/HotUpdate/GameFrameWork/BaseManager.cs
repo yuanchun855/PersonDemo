@@ -18,4 +18,5 @@ public class BaseManager<T> where T:new()
     public virtual void OnRemoveListener(){}
     
     public virtual void OnDispose(){}
+    public virtual void Update(){}
 }

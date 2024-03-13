@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
@@ -20,8 +21,12 @@ namespace HotUpdate.GameFrameWork.Module
         public GameObject TopRoot;
         public GameObject NormalRoot;
         public GameObject ButtomRoot;
-        
-        
+
+        private void Update()
+        {
+            
+        }
+
         private void Awake()
         {
             if (instance == null)

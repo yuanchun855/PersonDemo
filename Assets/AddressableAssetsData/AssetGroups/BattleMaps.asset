@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: BattleMaps
+  m_EditorClassIdentifier: 
+  m_GroupName: BattleMaps
+  m_Data:
+    m_SerializedData: []
+  m_GUID: 93d685c8593d1904eb13c3bdddcc6810
+  m_SerializeEntries:
+  - m_GUID: 644eff3c54b242b44a1a0b38e20311ef
+    m_Address: BattleMap1
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: cb7ebc8a687c23647b280c639b96a8cf, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: 9f9fe4b3f6d52834fb64b0f749241e93, type: 2}
+    - {fileID: 11400000, guid: 0025025d01d51714f8dbca17180c0a68, type: 2}

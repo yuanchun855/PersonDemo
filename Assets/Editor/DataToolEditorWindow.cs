@@ -31,6 +31,7 @@ namespace Editor
             if (!tempPath.Equals(""))
             {
                 Config.DllPath = tempPath;
+                EditorUtility.SetDirty(Config);
             }
             EditorGUILayout.EndHorizontal();
             tempPath = "";
@@ -44,6 +45,7 @@ namespace Editor
             if (!tempPath.Equals(""))
             {
                 Config.InputPath = tempPath;
+                EditorUtility.SetDirty(Config);
             }
             EditorGUILayout.EndHorizontal();
             tempPath = "";
@@ -56,6 +58,7 @@ namespace Editor
             if (!tempPath.Equals(""))
             {
                 Config.OutPutPath = tempPath;
+                EditorUtility.SetDirty(Config);
             }
             EditorGUILayout.EndHorizontal();
             tempPath = "";
@@ -68,6 +71,7 @@ namespace Editor
             if (!tempPath.Equals(""))
             {
                 Config.JsonPath = tempPath;
+                EditorUtility.SetDirty(Config);
             }
             EditorGUILayout.EndHorizontal();
             tempPath = "";

@@ -16,7 +16,22 @@ MonoBehaviour:
   m_Data:
     m_SerializedData: []
   m_GUID: 996f1b9140d6c134e9249d4f2486a650
-  m_SerializeEntries: []
+  m_SerializeEntries:
+  - m_GUID: 6c122bbafb450114ca6dba4c8f6c0618
+    m_Address: UIRoot
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ac9fda598e8d09744a3af54dd77ddff8
+    m_Address: windows
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8f1b3e76748e5fb4d8cde921b0293a46
+    m_Address: BattlePrefabs
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: cb7ebc8a687c23647b280c639b96a8cf, type: 2}
   m_SchemaSet:

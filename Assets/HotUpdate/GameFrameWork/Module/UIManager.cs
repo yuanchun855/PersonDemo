@@ -1,7 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEditor.U2D;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
+using UnityEngine.Rendering.Universal;
+using UnityEngine.U2D;
+using Object = UnityEngine.Object;
 
 namespace HotUpdate.GameFrameWork.Module
 {
@@ -9,8 +14,12 @@ namespace HotUpdate.GameFrameWork.Module
     {
         Top = 0,
         Normal = 1,
-        Buttom = 2,
+        Bottom = 2,
+        BattleUI = 3,
     }
+    /// <summary>
+    /// UI管理器
+    /// </summary>
     public class UIManager : MonoBehaviour
     {
         private static UIManager instance;
@@ -21,6 +30,18 @@ namespace HotUpdate.GameFrameWork.Module
         public GameObject TopRoot;
         public GameObject NormalRoot;
         public GameObject ButtomRoot;
+        public GameObject BattleUIRoot;
+        public Camera UICamera;
+
+        /// <summary>
+        /// 加载的图集
+        /// </summary>
+        /// <returns></returns>
+        private List<string> _atlas = new List<string>{"BrickAtlas"};
+
+        private Dictionary<string, Dictionary<string,Sprite>> _spriteAtlasMap = new Dictionary<string, Dictionary<string,Sprite>>();
+        
+        public Dictionary<string,Sprite> BrickAtlas => _spriteAtlasMap["BrickAtlas"];
 
         private void Update()
         {
@@ -29,6 +50,8 @@ namespace HotUpdate.GameFrameWork.Module
 
         private void Awake()
         {
+            Camera camera = Camera.main;
+            camera.GetUniversalAdditionalCameraData().cameraStack.Add(UICamera);
             if (instance == null)
             {
                 instance = this;
@@ -38,10 +61,30 @@ namespace HotUpdate.GameFrameWork.Module
                 Destroy(gameObject);
             }
         }
-        
+
+        private void Start()
+        {
+            foreach (string atlasName in _atlas)
+            {
+                ResourceManager.Instance.LoadAtlas(atlasName, (resource) =>
+                {
+                    Dictionary<string,Sprite> sprites = new Dictionary<string, Sprite>();
+                    
+                    foreach (Object item in resource)
+                    {
+                        if (item is Sprite)
+                        {
+                            sprites!.Add(item.name,(Sprite)item);
+                        }
+                    }
+                    _spriteAtlasMap.Add(atlasName,sprites);
+                });
+            }
+        }
+
 
         public delegate void LoadWindowSuccess<T>(T win);
-
+ 
         public void LoadWindow<T>(LoadWindowSuccess<T> loadSuccess = null) where T : UIWindow
         {
             string winName = typeof(T).Name;
@@ -52,6 +95,21 @@ namespace HotUpdate.GameFrameWork.Module
                     GameObject viewObj = Instantiate(obj, transform);
                     viewObj.name = typeof(T).Name;
                     T win = viewObj.GetComponent<T>();
+                    switch (win.UIGroup)
+                    {
+                        case UIGroup.Top:
+                            viewObj.transform.SetParent(TopRoot.transform,false);
+                            break;
+                        case UIGroup.Normal:
+                            viewObj.transform.SetParent(NormalRoot.transform,false);
+                            break;
+                        case UIGroup.Bottom:
+                            viewObj.transform.SetParent(ButtomRoot.transform,false);
+                            break;
+                        case UIGroup.BattleUI:
+                            viewObj.transform.SetParent(BattleUIRoot.transform,false);
+                            break;
+                    }
                     UIWindowsObject.Add(winName, win);
                     if (winName != "WindowMain")
                     {

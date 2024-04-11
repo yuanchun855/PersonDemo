@@ -1,12 +1,21 @@
-﻿using System;
+﻿/* 
+****************************************************
+* 文件：BattleManager.cs
+* 作者：Dev_Xcy
+* 创建时间：2024/04/10 18:22:16 星期三
+* 功能：战斗管理器
+* 修改：
+****************************************************
+*/
+using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
 using HotUpdate.Entity;
 using UnityEngine;
 using EventType = HotUpdate.GameFrameWork.MoudleDef.EventType;
 using Random = UnityEngine.Random;
 using DG.Tweening;
+using UnityEngine.EventSystems;
 
 namespace HotUpdate.GameFrameWork.Module
 {
@@ -17,25 +26,110 @@ namespace HotUpdate.GameFrameWork.Module
         private GameObject _brickTrans;
         private const int Row = 9;
         private const int Column = 9;
+        private const float _bossHp = 100f;
+        public int _recordBossHp = 100;
         private GameObject _brick;
         public int Score = 0;
         private bool _isDroping = false;
-        public enum BrickType
-        {
-            None,
-            Red,
-            Huang,
-            Zi,
-            End
-        }
+        private long ContinueTime = 5;
+        private List<BattleObjInfo> _isBlockedInfo = new List<BattleObjInfo>();
         public void Init()
         {
             LoadBrickAsset();
             _brickTrans = new GameObject
             {
-                name = "BrickRoot"
+                name = "BrickRoot",
+                layer = 7
             };
-            _brickTrans.layer = 7;
+        }
+
+        public void ClearSomeOne()   
+        {
+            if (curSelectInfo != null)
+            {
+                curSelectInfo.Clear();
+            }
+            AfterClearSomeOne(curSelectInfo);
+        }
+
+        private Vector2 GetRandomPos()
+        {
+            int row = Random.Range(0, Row);
+            int column = Random.Range(0, Column);
+            return new Vector2(row, column);
+        }
+
+        private void BlockBrickRandom(int cnt)
+        {
+            List<Vector2> vector2S = new List<Vector2>();
+            while (cnt>0)
+            {
+                Vector2 vector2 = GetRandomPos();
+                if (!vector2S.Contains(vector2) && ObjInfos[vector2].IsBlock==false)    
+                {
+                    cnt--;
+                    vector2S.Add(vector2);
+                }
+            }
+
+            foreach (var vector2 in vector2S)
+            {
+                ObjInfos[vector2].IsBlock = true;
+                ObjInfos[vector2].BlockEndTime = GetTimeStamp()+ContinueTime;
+                _isBlockedInfo.Add(ObjInfos[vector2]);
+                ObjInfos[vector2].UpdateBlock();
+            }
+        }
+
+        private long GetTimeStamp()
+        {
+            TimeSpan ts = DateTime.Now - new DateTime(1970, 1, 1, 0, 0, 0, 0);
+            return Convert.ToInt64(ts.TotalSeconds);
+        }      
+        
+        public void GenerateRandomPos(int cnt)
+        {
+            List<BattleObjInfo> infos = new List<BattleObjInfo>();
+            for (int i = 0; i < cnt; i++)
+            {
+                int row = Random.Range(0, Row);
+                int colum = Random.Range(0, Column);
+                Vector2 vector2 = new Vector2(row, colum);
+                infos.Add(ObjInfos[vector2]);
+            }
+            BattleObjInfo.BrickType type = (BattleObjInfo.BrickType)Random.Range(0, (int)BattleObjInfo.BrickType.Max);
+            foreach (BattleObjInfo info in infos)
+            {
+                info.GenerateTypeWithOutType(type);
+                info.SetEffect(false);
+                info.UpdateSprite();
+            }
+        }
+
+        public void ClearRowAndColumn(Vector2 vector2)
+        {
+            List<BattleObjInfo> infos = new List<BattleObjInfo>();
+            foreach (KeyValuePair<Vector2,BattleObjInfo> keyValuePair in ObjInfos)
+            {
+                if (keyValuePair.Key.x == vector2.x || keyValuePair.Key.y == vector2.y)
+                {
+                    infos.Add(keyValuePair.Value);
+                }
+            }
+            MoveDown(infos);
+        }
+        
+        public void ReInit()
+        {
+            for (int i = 0; i < Row; i++)
+            {
+                for (int j = 0; j < Column; j++)
+                {
+                    Vector2 pos = new Vector2(i, j);
+                    ObjInfos[pos].GenerateType();
+                }
+            }
+            FreshChest();
         }
         
         public bool IsCanExchange(BattleObjInfo info)
@@ -56,6 +150,12 @@ namespace HotUpdate.GameFrameWork.Module
                 }
             }
             return false;
+        }
+
+        private void AfterClearSomeOne(BattleObjInfo info)
+        {
+            List<BattleObjInfo> clearInfos = new List<BattleObjInfo> { info };
+            MoveDown(clearInfos);
         }
 
         private void Clear()
@@ -121,23 +221,27 @@ namespace HotUpdate.GameFrameWork.Module
                     }
                 }
             }
-
             Score += sumScore;
+            _recordBossHp -= sumScore;
+            EventManager.Instance.TriggerEvent(EventType.AttackBoss,null);
             MoveDown(clearInfos);
-            // FreshChest();
         }
 
 
         private void MoveDown(List<BattleObjInfo>clearInfos)
         {
             _isDroping = true;
+            SetIsCanClick(false);
             foreach (BattleObjInfo info in clearInfos)
             {
                 info.Clear();
             }
-
             if (clearInfos.TrueForAll(t=>t.Pos.x == 0))
             {
+                foreach (BattleObjInfo info in clearInfos)
+                {
+                    info.SetEffect(true);
+                }
                 FreshChest();
                 return;
             }
@@ -173,24 +277,32 @@ namespace HotUpdate.GameFrameWork.Module
                 return;
             }
             Debug.Log(count);
+            Sequence sequence = DOTween.Sequence();
             foreach (KeyValuePair<Vector2,Vector2> relation in relations)
             {
-                ObjInfos[relation.Value].Obj.transform.Find("Icon").DOLocalMove(new Vector3(0, -(relation.Key.x-relation.Value.x), 0),2.5f).SetSpeedBased().SetEase(Ease.Linear).onComplete = ()=>
-                {
-                    ObjInfos[relation.Value].Obj.transform.Find("Icon").localPosition = Vector3.zero;
-                    ObjInfos[relation.Key].UpdateSprite();
-                    count--;
-                    if (count == 0)
-                    {
-                        FreshChest();
-                    }
-                };
+                sequence.Insert(0,ObjInfos[relation.Value].Obj.transform.Find("Icon")
+                    .DOLocalMove(new Vector3(0, -(relation.Key.x - relation.Value.x), 0), 1f).SetEase(Ease.Linear).OnComplete((delegate {ObjInfos[relation.Value].Obj.transform.Find("Icon").localPosition = Vector3.zero;
+                        ObjInfos[relation.Key].UpdateSprite();})));
             }
+            sequence.Play().onComplete = (delegate
+            {
+                foreach (BattleObjInfo info in clearInfos)
+                {
+                    info.SetEffect(false);
+                }
+                SetIsCanClick(true);
+                FreshChest();
+            });
         }
 
+        private void SetIsCanClick(bool active)
+        {
+            if (Camera.main != null) Camera.main.GetComponent<Physics2DRaycaster>().enabled = active;
+        }
         private void FreshChest()
         {
-            _isDroping = false;
+            SetIsCanClick(false);
+            List<BattleObjInfo> infos = new List<BattleObjInfo>();
             for (int i = 0; i < Row; i++)
             {
                 for (int j = 0; j < Column; j++)
@@ -199,22 +311,78 @@ namespace HotUpdate.GameFrameWork.Module
                     BattleObjInfo info = ObjInfos[pos];
                     if (info.Type == BattleObjInfo.BrickType.None)
                     {
-                        info.GenerateType();
+                        infos.Add(info);
                     }
-                    info.UpdateSprite();
+                    else
+                    {
+                        info.UpdateSprite();
+                    }
                 }
             }
+
+            int cnt = infos.Count;
+
+            if (cnt <= 0)
+            {
+                _isDroping = false;
+                SetIsCanClick(true);
+                return;
+            }
+            foreach (BattleObjInfo info in infos)
+            {
+                info.GenerateType();
+                info.UpdateSprite();
+                info.Obj.transform.Find("Icon").transform.localPosition = new Vector3(0, 1, 0);
+                info.Obj.transform.Find("Icon").DOLocalMove(Vector3.zero, 2.5f).SetSpeedBased().SetEase(Ease.Linear).onComplete=
+                    () =>
+                    {
+                        cnt--;
+                        if (cnt<=0)
+                        {
+                            _isDroping = false;
+                        }
+                    };
+            }
+            SetIsCanClick(true);
         }
         private async void StartCheckClear()
         {
             await CheckClear();
+        }
+
+        private async UniTask BlockPlayer()
+        {
+            while (true)
+            {
+                await UniTask.Delay(TimeSpan.FromSeconds(10));
+                BlockBrickRandom(4);
+            }
+        }
+        
+        private async UniTask CheckBlockTime()
+        {
+            while (true)
+            {
+                await UniTask.Delay(TimeSpan.FromSeconds(1));
+                for (var index = _isBlockedInfo.Count - 1; index >= 0; index--)
+                {
+                    var num = _isBlockedInfo[index];
+                    Debug.Log($"结束时间:{num.BlockEndTime} 系统时间:{GetTimeStamp()}");
+                    if (num.BlockEndTime <= GetTimeStamp())
+                    {
+                        ObjInfos[num.Pos].IsBlock = false;
+                        ObjInfos[num.Pos].UpdateBlock();
+                        _isBlockedInfo.Remove(num);
+                    }
+                }
+            }
         }
         
         private async UniTask CheckClear()
         {
             while (true)
             {
-                await UniTask.Delay(TimeSpan.FromSeconds(1));
+                await UniTask.Delay(TimeSpan.FromSeconds(0.5));
                 Clear();
             }
         }
@@ -226,7 +394,8 @@ namespace HotUpdate.GameFrameWork.Module
             });
             InitBricks();
             StartCheckClear();
-            // Clear();
+            BlockPlayer();
+            CheckBlockTime();
         }
 
         private void LoadBrickAsset()
@@ -244,7 +413,7 @@ namespace HotUpdate.GameFrameWork.Module
                 for (int j = 0; j < Column; j++)
                 {
                     BattleObjInfo info;
-                    int index = Random.Range(1, (int)BrickType.End);
+                    int index = Random.Range(1, (int)BattleObjInfo.BrickType.Max);
                     GameObject obj = GameObject.Instantiate(_brick, _brickTrans.transform, true);
                     obj.name = $"Brick({j},{i})";
                     info = new BattleObjInfo(new Vector2(j, i), (BattleObjInfo.BrickType)index,obj);
@@ -278,13 +447,48 @@ namespace HotUpdate.GameFrameWork.Module
         {
             Debug.Log("交换");
             curSelectInfo.SetSelect(false);
-            if (info != null && ObjInfos.ContainsKey(info.Pos))
+            Ease ease = Ease.InOutBack;
+            GameObject curObj = curSelectInfo.Obj.transform.Find("Icon").gameObject;
+            GameObject exchangeObj = info.Obj.transform.Find("Icon").gameObject;
+            Sequence sequence = DOTween.Sequence();
+            if (info.Left == curSelectInfo.Pos)
             {
-                info.SetSelect(false);
-                (curSelectInfo.Type, info.Type) = (info.Type, curSelectInfo.Type);
-                curSelectInfo = null;
-                FreshChest();
-                Clear();
+                Debug.Log("在左边");
+                sequence.Insert(0, exchangeObj.transform.DOLocalMove(new Vector3(-1, 0, 0), 0.5f).SetEase(ease));
+                sequence.Insert(0, curObj.transform.DOLocalMove(new Vector3(1, 0, 0), 0.5f).SetEase(ease));
+                sequence.Play().onComplete = Fresh;
+            }
+            else if (info.Right == curSelectInfo.Pos)
+            {
+                Debug.Log("在右边");
+                sequence.Insert(0, exchangeObj.transform.DOLocalMove(new Vector3(1, 0, 0), 0.5f).SetEase(ease));
+                sequence.Insert(0, curObj.transform.DOLocalMove(new Vector3(-1, 0, 0), 0.5f).SetEase(ease));
+                sequence.Play().onComplete = Fresh;
+            }
+            else if (info.Up == curSelectInfo.Pos)
+            {
+                Debug.Log("在上面");
+                sequence.Insert(0, exchangeObj.transform.DOLocalMove(new Vector3(0, 1, 0), 0.5f).SetEase(ease));
+                sequence.Insert(0, curObj.transform.DOLocalMove(new Vector3(0, -1, 0), 0.5f).SetEase(ease));
+                sequence.Play().onComplete = Fresh;
+            }
+            else if(info.Down == curSelectInfo.Pos)
+            {
+                Debug.Log("在下面");
+                sequence.Insert(0, exchangeObj.transform.DOLocalMove(new Vector3(0, -1, 0), 0.5f).SetEase(ease));
+                sequence.Insert(0, curObj.transform.DOLocalMove(new Vector3(0, 1, 0), 0.5f).SetEase(ease));
+                sequence.Play().onComplete = Fresh;
+            }
+
+            void Fresh()
+            {
+                if (info != null && ObjInfos.ContainsKey(info.Pos))
+                {
+                    info.SetSelect(false);
+                    (curSelectInfo.Type, info.Type) = (info.Type, curSelectInfo.Type);
+                    curSelectInfo = null;
+                    FreshChest();
+                }
             }
         }
     }

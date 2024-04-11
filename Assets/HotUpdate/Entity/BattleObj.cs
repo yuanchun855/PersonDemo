@@ -16,6 +16,10 @@ namespace HotUpdate.Entity
 
         public void PointClick()
         {
+            if (BattleManager.Instance.ObjInfos[BattleObjInfo.Pos].IsBlock)
+            {
+                return;
+            }
             if (BattleManager.Instance.curSelectInfo == null)
             {
                 BattleObjInfo.SetSelect(true);

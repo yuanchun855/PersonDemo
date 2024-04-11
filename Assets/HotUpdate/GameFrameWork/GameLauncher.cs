@@ -1,4 +1,5 @@
 ﻿using HotUpdate.GameFrameWork.Module;
+using HotUpdate.GameFrameWork.UI;
 using HotUpdate.GameFrameWork.Windows;
 using UnityEngine;
 

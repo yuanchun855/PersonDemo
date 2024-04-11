@@ -1,0 +1,102 @@
+{"frames": [
+
+{
+	"filename": "dmg_0.png",
+	"frame": {"x":1,"y":1,"w":30,"h":44},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":3,"y":0,"w":30,"h":44},
+	"sourceSize": {"w":30,"h":44},
+	"pivot": {"x":0.5,"y":0.5}
+},
+{
+	"filename": "dmg_1.png",
+	"frame": {"x":33,"y":1,"w":24,"h":44},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":6,"y":0,"w":24,"h":44},
+	"sourceSize": {"w":24,"h":44},
+	"pivot": {"x":0.5,"y":0.5}
+},
+{
+	"filename": "dmg_2.png",
+	"frame": {"x":59,"y":1,"w":29,"h":44},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":3,"y":0,"w":29,"h":44},
+	"sourceSize": {"w":29,"h":44},
+	"pivot": {"x":0.517241,"y":0.5}
+},
+{
+	"filename": "dmg_3.png",
+	"frame": {"x":90,"y":1,"w":29,"h":44},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":3,"y":0,"w":29,"h":44},
+	"sourceSize": {"w":29,"h":44},
+	"pivot": {"x":0.517241,"y":0.5}
+},
+{
+	"filename": "dmg_4.png",
+	"frame": {"x":1,"y":47,"w":30,"h":44},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":3,"y":0,"w":30,"h":44},
+	"sourceSize": {"w":30,"h":44},
+	"pivot": {"x":0.5,"y":0.5}
+},
+{
+	"filename": "dmg_5.png",
+	"frame": {"x":33,"y":47,"w":30,"h":44},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":3,"y":0,"w":30,"h":44},
+	"sourceSize": {"w":30,"h":44},
+	"pivot": {"x":0.5,"y":0.5}
+},
+{
+	"filename": "dmg_6.png",
+	"frame": {"x":65,"y":47,"w":30,"h":44},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":3,"y":0,"w":30,"h":44},
+	"sourceSize": {"w":30,"h":44},
+	"pivot": {"x":0.5,"y":0.5}
+},
+{
+	"filename": "dmg_7.png",
+	"frame": {"x":97,"y":47,"w":25,"h":44},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":5,"y":0,"w":25,"h":44},
+	"sourceSize": {"w":25,"h":44},
+	"pivot": {"x":0.52,"y":0.5}
+},
+{
+	"filename": "dmg_8.png",
+	"frame": {"x":1,"y":93,"w":30,"h":44},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":3,"y":0,"w":30,"h":44},
+	"sourceSize": {"w":30,"h":44},
+	"pivot": {"x":0.5,"y":0.5}
+},
+{
+	"filename": "dmg_9.png",
+	"frame": {"x":33,"y":93,"w":30,"h":44},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":3,"y":0,"w":30,"h":44},
+	"sourceSize": {"w":30,"h":44},
+	"pivot": {"x":0.5,"y":0.5}
+}],
+"meta": {
+	"app": "https://www.codeandweb.com/texturepacker",
+	"version": "1.0",
+	"image": "FontJson.png",
+	"format": "RGBA8888",
+	"size": {"w":138,"h":138},
+	"scale": "1",
+	"smartupdate": "$TexturePacker:SmartUpdate:34fbd4b3303e6eea84a912331a6a64ac:dd518202283f1481993ff9a3f36ddb86:46ee095be2df4d89aac85f94e9cbff5f$"
+}
+}

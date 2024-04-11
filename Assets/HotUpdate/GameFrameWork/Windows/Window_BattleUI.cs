@@ -1,7 +1,9 @@
 ﻿using System;
+using DG.Tweening;
 using HotUpdate.GameFrameWork.Module;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SocialPlatforms.Impl;
 using UnityEngine.UI;
 using EventType = HotUpdate.GameFrameWork.MoudleDef.EventType;
 
@@ -9,37 +11,81 @@ namespace HotUpdate.GameFrameWork.Windows
 {
     public class Window_BattleUI: UIWindow
     {
-        private TextMeshProUGUI _score;
-        private Button _btn;
+        
+        private WinView _winView;
+        private class WinView
+        {
+            public readonly TextMeshProUGUI Score;
+            public readonly Button ReBuildBtn;
+            public readonly Button BtnBomb;
+            public readonly Image Fill;
+            public readonly TextMeshProUGUI RemainFoot;
+            public WinView(UIWindow uiWindow)
+            {
+                Score = uiWindow.GetCommon<TextMeshProUGUI>("Score");
+                ReBuildBtn = uiWindow.GetCommon<Button>("ReBuildBtn");
+                BtnBomb = uiWindow.GetCommon<Button>("BtnBomb");
+                Fill = uiWindow.GetCommon<Image>("Fill");
+                RemainFoot = uiWindow.GetCommon<TextMeshProUGUI>("RemainFoot");
+            }
+        }
         public void Open()
         {
-            _score.text = BattleManager.Instance.Score.ToString();
+            _winView.Score.text = BattleManager.Instance.Score.ToString();
+            string text = _winView.RemainFoot.text;
+            var t = DOTween.To(() => string.Empty, value => _winView.RemainFoot.text = value, text, 3f).SetEase(Ease.Linear);
+            //富文本
+            t.SetOptions(true);
         }
-        public override void OnAddListener()
+
+        private void Update()
         {
-            _btn.onClick.AddListener(() =>
+            if (Input.GetKeyDown(KeyCode.C))
             {
-                Debug.Log("#13131313");
+                BattleManager.Instance.ClearRowAndColumn(new Vector2(2,1));
+            }
+            if (Input.GetKeyDown(KeyCode.G))
+            {
+                BattleManager.Instance.GenerateRandomPos(10);
+            }
+        }
+
+        protected override void OnAddListener()
+        {
+            _winView.ReBuildBtn.onClick.AddListener(() =>
+            {
+                BattleManager.Instance.ReInit();
+            });
+            _winView.BtnBomb.onClick.AddListener(() =>
+            {
+                BattleManager.Instance.ClearSomeOne();
             });
             EventManager.Instance.AddListener(EventType.AddScore,FreshScore);
+            EventManager.Instance.AddListener(EventType.AttackBoss,FreshBossHp);
             base.OnAddListener();
         }
 
+        private void FreshBossHp(object sender, EventArgs e)
+        {
+            _winView.Fill.fillAmount = BattleManager.Instance._recordBossHp / 100f;
+        }
         private void FreshScore(object sender, EventArgs e)
         {
-            _score.text = BattleManager.Instance.Score.ToString();
+            _winView.Score.text = BattleManager.Instance.Score.ToString();
         }
 
-        public override void OnRemoveListener()
+        protected override void OnRemoveListener()
         {
             base.OnRemoveListener();
-            _btn.onClick.RemoveAllListeners();
+            _winView.ReBuildBtn.onClick.RemoveAllListeners();
+            _winView.BtnBomb.onClick.RemoveAllListeners();
+            EventManager.Instance.RemoveListener(EventType.AttackBoss,FreshBossHp);
+            EventManager.Instance.RemoveListener(EventType.AddScore,FreshScore);
         }
 
         public override void OnOpen()
         {
-            _score = GetCommon<TextMeshProUGUI>("Score");
-            _btn = GetCommon<Button>("Btn");
+            _winView ??= new WinView(this);
             base.OnOpen();
         }
     }

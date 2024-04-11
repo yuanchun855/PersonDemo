@@ -1,0 +1,197 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using UnityEditor.U2D;
+using UnityEngine;
+using UnityEngine.AddressableAssets;
+using UnityEngine.Rendering.Universal;
+using UnityEngine.U2D;
+using Object = UnityEngine.Object;
+
+namespace HotUpdate.GameFrameWork.Module
+{
+    public enum UIGroup
+    {
+        Top = 0,
+        Normal = 1,
+        Bottom = 2,
+        BattleUI = 3,
+    }
+    /// <summary>
+    /// UI管理器
+    /// </summary>
+    public class UIManager : MonoBehaviour
+    {
+        private static UIManager instance;
+        public static UIManager Instance => instance;
+        private Dictionary<string, GameObject> uiWindows = new Dictionary<string, GameObject>();
+        protected Dictionary<string, UIWindow> UIWindowsObject = new Dictionary<string, UIWindow>();
+        protected Stack<UIWindow> UIWindowsStack = new Stack<UIWindow>();
+        public GameObject TopRoot;
+        public GameObject NormalRoot;
+        public GameObject ButtomRoot;
+        public GameObject BattleUIRoot;
+        public Camera UICamera;
+
+        /// <summary>
+        /// 加载的图集
+        /// </summary>
+        /// <returns></returns>
+        private List<string> _atlas = new List<string>{"BrickAtlas"};
+
+        private Dictionary<string, Dictionary<string,Sprite>> _spriteAtlasMap = new Dictionary<string, Dictionary<string,Sprite>>();
+        
+        public Dictionary<string,Sprite> BrickAtlas => _spriteAtlasMap["BrickAtlas"];
+
+        private void Update()
+        {
+            foreach (UIWindow uiWindow in UIWindowsStack)
+            {
+                uiWindow.OnUpdate();
+            }
+        }
+
+        private void Awake()
+        {
+            Camera camera = Camera.main;
+            camera.GetUniversalAdditionalCameraData().cameraStack.Add(UICamera);
+            if (instance == null)
+            {
+                instance = this;
+            }
+            else
+            {
+                Destroy(gameObject);
+            }
+        }
+
+        private void Start()
+        {
+            foreach (string atlasName in _atlas)
+            {
+                ResourceManager.Instance.LoadAtlas(atlasName, (resource) =>
+                {
+                    Dictionary<string,Sprite> sprites = new Dictionary<string, Sprite>();
+                    
+                    foreach (Object item in resource)
+                    {
+                        if (item is Sprite)
+                        {
+                            sprites!.Add(item.name,(Sprite)item);
+                        }
+                    }
+                    _spriteAtlasMap.Add(atlasName,sprites);
+                });
+            }
+        }
+
+
+        public delegate void LoadWindowSuccess<T>(T win);
+ 
+        public void LoadWindow<T>(LoadWindowSuccess<T> loadSuccess = null) where T : UIWindow
+        {
+            string winName = typeof(T).Name;
+            if (!UIWindowsObject.ContainsKey(winName))
+            {
+                ResourceManager.Instance.LoadPrefabByAssetType(ResourceManager.AssetType.Window, winName, (obj) =>
+                {
+                    GameObject viewObj = Instantiate(obj, transform);
+                    viewObj.name = typeof(T).Name;
+                    T win = viewObj.GetComponent<T>();
+                    switch (win.UIGroup)
+                    {
+                        case UIGroup.Top:
+                            viewObj.transform.SetParent(TopRoot.transform,false);
+                            break;
+                        case UIGroup.Normal:
+                            viewObj.transform.SetParent(NormalRoot.transform,false);
+                            break;
+                        case UIGroup.Bottom:
+                            viewObj.transform.SetParent(ButtomRoot.transform,false);
+                            break;
+                        case UIGroup.BattleUI:
+                            viewObj.transform.SetParent(BattleUIRoot.transform,false);
+                            break;
+                    }
+                    UIWindowsObject.Add(winName, win);
+                    if (winName != "WindowMain")
+                    {
+                        UIWindowsStack.Push(win);
+                    }
+
+                    win.OnOpen();
+                    for (int i = 0; i < UIWindowsStack.Count; i++)
+                    {
+                        if (i == 0)
+                        {
+                            UIWindowsStack.ElementAt(i).gameObject.SetActive(true);
+                        }
+                        else
+                        {
+                            UIWindowsStack.ElementAt(i).gameObject.SetActive(false);
+                        }
+                    }
+
+                    loadSuccess?.Invoke(win);
+                });
+            }
+        }
+
+        public void CloseWindow<T>() where T : UIWindow
+        {
+            string winName = typeof(T).Name;
+            if (UIWindowsObject.ContainsKey(winName))
+            {
+                UIWindowsStack.Pop();
+                UIWindowsObject[winName].OnClose();
+                Destroy(UIWindowsObject[winName].gameObject);
+                UIWindowsObject.Remove(winName);
+            }
+
+            UIWindowsStack.TryPeek(out UIWindow uiWindow);
+            if (uiWindow != null)
+            {
+                uiWindow.gameObject.SetActive(true);
+            }
+        }
+
+        private UIWindow GetCurWindow()
+        {
+            return UIWindowsStack.Pop();
+        }
+
+        public void CloseCurWindow()
+        {
+            UIWindow uiWindow = GetCurWindow();
+            string winName = uiWindow.name;
+            UIWindowsObject[winName].OnClose();
+            Destroy(UIWindowsObject[winName].gameObject);
+            UIWindowsObject.Remove(winName);
+            UIWindowsStack.TryPeek(out UIWindow win);
+            if (win != null)
+            {
+                win.gameObject.SetActive(true);
+            }
+        }
+
+        protected T InstantiateView<T>() where T : UIWindow
+        {
+            string winName = typeof(T).Name;
+            T view = null;
+            ResourceManager.Instance.LoadPrefabByAssetType(ResourceManager.AssetType.Window,winName, (obj) =>
+            {
+                GameObject viewObj = Instantiate(obj, transform);
+                viewObj.name = typeof(T).Name;
+                view = viewObj.GetComponent<T>();
+            });
+            return view;
+        }
+
+        public void Init()
+        {
+            
+        }
+        
+        
+    }
+}

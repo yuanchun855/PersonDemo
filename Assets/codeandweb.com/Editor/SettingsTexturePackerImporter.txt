@@ -1,11 +1,14 @@
 version: 2
 tpsheetFileNames:
 - Assets/Art/BrickAtlas/BrickAtlas.tpsheet
+- Assets/Art/UI/Common/CommonAtlas.tpsheet
 - Assets/codeandweb.com/Example/SpriteSheet/sprites.tpsheet
 textureFileNames:
 - Assets/Art/BrickAtlas/BrickAtlas.png
+- Assets/Art/UI/Common/CommonAtlas.png
 - Assets/codeandweb.com/Example/SpriteSheet/sprites.png
 normalmapFileNames:
+- 
 - 
 - Assets/codeandweb.com/Example/SpriteSheet/sprites_n.png
 enableDebugOutput: 0

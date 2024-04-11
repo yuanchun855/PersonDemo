@@ -4,7 +4,7 @@
         <key>fileFormatVersion</key>
         <int>6</int>
         <key>texturePackerVersion</key>
-        <string>7.1.0</string>
+        <string>7.2.0</string>
         <key>autoSDSettings</key>
         <array>
             <struct type="AutoSDSettings">
@@ -155,7 +155,7 @@
             <key>scaleMode</key>
             <enum type="ScaleMode">Smooth</enum>
             <key>extrude</key>
-            <uint>0</uint>
+            <uint>1</uint>
             <key>trimThreshold</key>
             <uint>1</uint>
             <key>trimMargin</key>
@@ -175,47 +175,10 @@
         <map type="IndividualSpriteSettingsMap">
             <key type="filename">raw/1.png</key>
             <key type="filename">raw/10.png</key>
-            <key type="filename">raw/11.png</key>
-            <key type="filename">raw/12.png</key>
-            <key type="filename">raw/13.png</key>
-            <key type="filename">raw/14.png</key>
-            <key type="filename">raw/15.png</key>
-            <key type="filename">raw/16.png</key>
-            <key type="filename">raw/17.png</key>
-            <key type="filename">raw/18.png</key>
-            <key type="filename">raw/19.png</key>
+            <key type="filename">raw/101.png</key>
             <key type="filename">raw/2.png</key>
-            <key type="filename">raw/20.png</key>
-            <key type="filename">raw/21.png</key>
-            <key type="filename">raw/22.png</key>
-            <key type="filename">raw/23.png</key>
-            <key type="filename">raw/24.png</key>
-            <key type="filename">raw/25.png</key>
-            <key type="filename">raw/26.png</key>
-            <key type="filename">raw/27.png</key>
-            <key type="filename">raw/28.png</key>
-            <key type="filename">raw/29.png</key>
             <key type="filename">raw/3.png</key>
-            <key type="filename">raw/30.png</key>
-            <key type="filename">raw/31.png</key>
-            <key type="filename">raw/32.png</key>
-            <key type="filename">raw/33.png</key>
-            <key type="filename">raw/34.png</key>
-            <key type="filename">raw/35.png</key>
-            <key type="filename">raw/36.png</key>
-            <key type="filename">raw/37.png</key>
-            <key type="filename">raw/38.png</key>
-            <key type="filename">raw/39.png</key>
             <key type="filename">raw/4.png</key>
-            <key type="filename">raw/40.png</key>
-            <key type="filename">raw/41.png</key>
-            <key type="filename">raw/42.png</key>
-            <key type="filename">raw/43.png</key>
-            <key type="filename">raw/44.png</key>
-            <key type="filename">raw/45.png</key>
-            <key type="filename">raw/46.png</key>
-            <key type="filename">raw/47.png</key>
-            <key type="filename">raw/48.png</key>
             <key type="filename">raw/5.png</key>
             <key type="filename">raw/6.png</key>
             <key type="filename">raw/7.png</key>
@@ -229,9 +192,9 @@
                 <key>scale9Enabled</key>
                 <false/>
                 <key>scale9Borders</key>
-                <rect>64,64,128,128</rect>
+                <rect>100,100,200,200</rect>
                 <key>scale9Paddings</key>
-                <rect>64,64,128,128</rect>
+                <rect>100,100,200,200</rect>
                 <key>scale9FromFile</key>
                 <false/>
             </struct>

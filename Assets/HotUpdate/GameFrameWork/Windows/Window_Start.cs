@@ -1,4 +1,5 @@
 ﻿using HotUpdate.GameFrameWork.Module;
+using HotUpdate.GameFrameWork.UI;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -11,7 +12,8 @@ namespace HotUpdate.GameFrameWork.Windows
         {
             BattleManager.Instance.Init();
         }
-        public override void OnAddListener()
+
+        protected override void OnAddListener()
         {
             base.OnAddListener();
             _enterBattle.onClick.AddListener(EnterBattle);
@@ -24,7 +26,7 @@ namespace HotUpdate.GameFrameWork.Windows
             BattleManager.Instance.LoadBattleMap();
         }
 
-        public override void OnRemoveListener()
+        protected override void OnRemoveListener()
         {
             base.OnRemoveListener();
             _enterBattle.onClick.RemoveAllListeners();

@@ -15,28 +15,16 @@ namespace cfg
 public partial class Tables
 {
     public item.TbItem TbItem {get; }
-    public festival.TbFestival TbFestival {get; }
-    public festivalIcon.TbFestivalIcon TbFestivalIcon {get; }
-    public pay.TbPay TbPay {get; }
-    public task.TbTask TbTask {get; }
 
     public Tables(System.Func<string, JSONNode> loader)
     {
         TbItem = new item.TbItem(loader("item_tbitem"));
-        TbFestival = new festival.TbFestival(loader("festival_tbfestival"));
-        TbFestivalIcon = new festivalIcon.TbFestivalIcon(loader("festivalicon_tbfestivalicon"));
-        TbPay = new pay.TbPay(loader("pay_tbpay"));
-        TbTask = new task.TbTask(loader("task_tbtask"));
         ResolveRef();
     }
     
     private void ResolveRef()
     {
         TbItem.ResolveRef(this);
-        TbFestival.ResolveRef(this);
-        TbFestivalIcon.ResolveRef(this);
-        TbPay.ResolveRef(this);
-        TbTask.ResolveRef(this);
     }
 }
 

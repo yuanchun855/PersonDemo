@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cde20ae40e8fe9644b7f4196566f2cf7, type: 3}
   m_Name: DataToolConfigData
   m_EditorClassIdentifier: 
-  DllPath: 
+  DllPath: C:/tttt/PersonDemo/Tools/Luban/Luban.dll
   InputPath: 
   OutPutPath: 
   JsonPath: 

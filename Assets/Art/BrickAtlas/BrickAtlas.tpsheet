@@ -1,0 +1,26 @@
+#
+# Sprite sheet data for Unity.
+#
+# To import these sprites into your Unity project, download "TexturePackerImporter":
+# https://www.codeandweb.com/texturepacker/unity
+#
+# $TexturePacker:SmartUpdate:4d48a5bbe7224612478c4d1a162df9b8:fff4444c3e1e9e0d4f7d24b384de3cb8:cbbbde09506e38ac6cf9d2e44871f192$
+#
+:format=40300
+:texture=BrickAtlas.png
+:size=2048x2048
+:pivotpoints=enabled
+:borders=disabled
+:alphahandling=ClearTransparentPixels
+
+1;1;1647;400;400; 0.5;0.5; 0;0;0;0
+2;403;1647;400;400; 0.5;0.5; 0;0;0;0
+3;805;1647;400;400; 0.5;0.5; 0;0;0;0
+4;1207;1647;400;400; 0.5;0.5; 0;0;0;0
+5;1609;1647;400;400; 0.5;0.5; 0;0;0;0
+6;1;1245;400;400; 0.5;0.5; 0;0;0;0
+7;403;1245;400;400; 0.5;0.5; 0;0;0;0
+8;805;1245;400;400; 0.5;0.5; 0;0;0;0
+9;1207;1245;400;400; 0.5;0.5; 0;0;0;0
+10;1609;1245;400;400; 0.5;0.5; 0;0;0;0
+101;1;843;400;400; 0.5;0.5; 0;0;0;0

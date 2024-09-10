@@ -8,7 +8,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Networking;
-
+using UnityEngine.Playables;
 public class LoadDll : MonoBehaviour
 {
     void Start()
@@ -22,4 +22,5 @@ public class LoadDll : MonoBehaviour
         Type type = hotUpdateAss.GetType("HotUpdateEntry");
         type.GetMethod("Run").Invoke(null, null);
     }
+    
 }

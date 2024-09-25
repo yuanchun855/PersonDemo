@@ -1,9 +1,9 @@
 ﻿using System;
 using DG.Tweening;
 using HotUpdate.GameFrameWork.Module;
+using HotUpdate.GameFrameWork.UI;
 using TMPro;
 using UnityEngine;
-using UnityEngine.SocialPlatforms.Impl;
 using UnityEngine.UI;
 using EventType = HotUpdate.GameFrameWork.MoudleDef.EventType;
 

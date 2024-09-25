@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Text;
 using HotUpdate.GameFrameWork.Module;
+using HotUpdate.GameFrameWork.UI;
 using TMPro;
 using UnityEditor;
 using UnityEngine;
